@@ -1,0 +1,18 @@
+{
+  "usuarios": [
+    {
+      "nome": "Amanda Oliveira",
+      "telefone": "9956-7574",
+      "endereço": "Rua paulo brasil, 920",
+      "email": "amanda@email.com",
+      "id": 1
+    },
+    {
+      "nome": "Thiago Silva",
+      "endereço": "Pires Correia",
+      "email": "thiago@email.com",
+      "telefone": "9987-9854",
+      "id": 2
+    }
+  ]
+}
