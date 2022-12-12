@@ -1,55 +1,54 @@
-import {useState, useEffect} from 'react'
+import { useState, useEffect } from "react";
+
+type Method = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
 
 // 4 - custom hook
-export const useFetch = (url:any) => {
-    const [data, setData] = useState([])
+export const useFetch = (url: string) => {
+  const [data, setData] = useState([]);
 
-    // 5 - refatorando post
-    const [config, setConfig] = useState(null)
-    const [method, setMethod] = useState(null)
-    const [callFetch, setCallFetch] = useState(false)
+  // 5 - refatorando post
+  const [config, setConfig] = useState({});
+  const [method, setMethod] = useState<Method>("GET");
+  const [callFetch, setCallFetch] = useState(false);
 
-
-    const httpconfig = (data, method) => {
-        if(method === "POST") {
-            setConfig({
-                method,
-                headers: {
-                    "Content-type": "application/json",
-                },
-                body: JSON.stringify(data)
-            })
-            setMethod(method)
-        }
+  const httpconfig = (data: any, method: string) => {
+    if (method === "POST") {
+      setConfig({
+        method,
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      setMethod(method);
     }
-    useEffect(() => {
+  };
 
-        const fetchData = async () => {
-            const res = await fetch(url)
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await fetch(url);
 
-            const json = await res.json()
+      const json = await res.json();
 
-            setData(json)
-        }
+      setData(json);
+    };
 
-        fetchData()
-    }, [url, callFetch])
+    fetchData();
+  }, [url, callFetch]);
 
-    // 5 - refatorando post
-    useEffect(() => {
-        const httpRequest = async () => {
-            if (method === "POST") {
-                let fetchOptions = [url, config]
+  // 5 - refatorando post
+  useEffect(() => {
+    const httpRequest = async () => {
+      if (method === "POST") {
+        const res = await fetch(url, { method });
+        const json = await res.json();
 
-                const res = await fetch(...fetchOptions)
+        setCallFetch(json);
+      }
+    };
+    httpRequest();
+  }, [config, method, url]);
 
-                const json = await res.json()
+  return { data, httpconfig };
+};
 
-                setCallFetch(json)
-            }
-        }
-        httpRequest()
-    },[config, method, url])
-
-    return{data, httpconfig}
-}
