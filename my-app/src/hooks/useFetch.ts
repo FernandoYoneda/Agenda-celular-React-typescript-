@@ -1,55 +1,27 @@
-import {useState, useEffect} from 'react'
+import { useState, useEffect } from "react";
 
 // 4 - custom hook
-export const useFetch = (url:any) => {
-    const [data, setData] = useState([])
+export const useFetch = (url: string) => {
+  const [data, setData] = useState([]);
 
-    // 5 - refatorando post
-    const [config, setConfig] = useState(null)
-    const [method, setMethod] = useState(null)
-    const [callFetch, setCallFetch] = useState(false)
+  // 5 - refatorando post
+  const [callFetch, setCallFetch] = useState(true);
 
 
-    const httpconfig = (data, method) => {
-        if(method === "POST") {
-            setConfig({
-                method,
-                headers: {
-                    "Content-type": "application/json",
-                },
-                body: JSON.stringify(data)
-            })
-            setMethod(method)
-        }
-    }
-    useEffect(() => {
+  useEffect(() => {
+    if (!callFetch ) return
 
-        const fetchData = async () => {
-            const res = await fetch(url)
+    const fetchData = async () => {
+      const res = await fetch(url);
 
-            const json = await res.json()
+      const json = await res.json();
 
-            setData(json)
-        }
+      setData(json);
+      setCallFetch(false)
+    };
 
-        fetchData()
-    }, [url, callFetch])
+    fetchData();
+  }, [url, callFetch]);
 
-    // 5 - refatorando post
-    useEffect(() => {
-        const httpRequest = async () => {
-            if (method === "POST") {
-                let fetchOptions = [url, config]
-
-                const res = await fetch(...fetchOptions)
-
-                const json = await res.json()
-
-                setCallFetch(json)
-            }
-        }
-        httpRequest()
-    },[config, method, url])
-
-    return{data, httpconfig}
-}
+  return { data, reload: () => setCallFetch(true) };
+};
