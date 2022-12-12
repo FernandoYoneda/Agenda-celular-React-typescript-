@@ -74,7 +74,7 @@ function App() {
     <div className="App">
       <h1>Contatos</h1>
       <ul>
-        {usuarios.map((usuario) => (
+        {items && items.map((usuario:any) => (
           <div key={usuario.id}>
             <h1>{usuario.nome}</h1>  
             <p>Endereço: {usuario.endereço}</p>
