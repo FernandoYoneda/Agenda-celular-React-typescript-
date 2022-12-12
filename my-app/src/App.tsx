@@ -25,7 +25,7 @@ function App() {
   const [telefone, setTelefone] = useState("")
   
   // 4 - custom 
-  const {data: items} = useFetch(url)
+  const {data: items, httpconfig} = useFetch(url)
 
   // 1 -  resgatando os dados
 /* useEffect( () => {
@@ -51,7 +51,7 @@ function App() {
       telefone
     }
     
-    const res = await fetch(url, {
+   /* const res = await fetch(url, {
       method: "POST",
       headers: {
         "Content-type" : "application/json",
@@ -62,7 +62,10 @@ function App() {
     // 3 - Carregamento dinâmico
     const addedUsuario = await res.json()
 
-    setUsuarios((prevUsusarios) => [...prevUsusarios, addedUsuario])
+    setUsuarios((prevUsusarios) => [...prevUsusarios, addedUsuario]) */
+
+    // 5 - refatorando post
+    httpconfig(usuarios, "POST")
 
     setNome("")
     setEmail("")
