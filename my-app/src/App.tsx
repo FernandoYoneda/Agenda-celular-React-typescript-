@@ -33,7 +33,8 @@ function App() {
   const [telefone, setTelefone] = useState("");
 
   // 4 - custom
-  const { data: items, reload } = useFetch(url);
+  const { data: items, reload } = useFetch<Usuario[]>(url);
+  const usuariosOrdenados = items?.sort((a, b) => a.nome.toLowerCase() > b.nome.toLowerCase() ? 1 : -1)
 
 
 
@@ -61,8 +62,8 @@ function App() {
     <div className="App">
       <h1>Contatos</h1>
       <ul>
-        {items &&
-          items.map((usuario: Usuario) => (
+        {usuariosOrdenados &&
+          usuariosOrdenados.map((usuario: Usuario) => (
             <div key={usuario.id}>
               <h1>{usuario.nome}</h1>
               <p>Endereço: {usuario.endereço}</p>
