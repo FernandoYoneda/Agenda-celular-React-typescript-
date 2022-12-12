@@ -1,10 +1,9 @@
 import './App.css';
-import { BrowserRouter, Routes, Route} from "react-router-dom"
+
 import {useState, useEffect} from 'react'
 
-//Pages
-import Home from "./paginas/Home"
-import Usuarios from './paginas/Usuarios';
+// 4 - custom hook
+import { useFetch } from "./hooks/useFetch"
 
 const url = "http://localhost:3000/usuarios"
 
@@ -19,15 +18,17 @@ type Usuario = {
 
 function App() {
 
-  
   const [usuarios, setUsuarios] = useState<Usuario[]>([])
   const [nome, setNome] = useState("")
   const [endereço, setEndereço] = useState("")
   const [email, setEmail] = useState("")
   const [telefone, setTelefone] = useState("")
   
+  // 4 - custom 
+  const {data: items} = useFetch(url)
+
   // 1 -  resgatando os dados
-  useEffect( () => {
+/* useEffect( () => {
     async function fetchData() {
 
       const res = await fetch(url)
@@ -37,7 +38,7 @@ function App() {
     setUsuarios(data)
     }
     fetchData()
-  }, [url])
+  }, [url]) */
 
   // 2 - adicionar usuário
   const handleSubmit = async (e:any) =>{
@@ -100,11 +101,7 @@ function App() {
         </form>
       </div>
 
-      <BrowserRouter>
-        <Routes>
-          <Route path='/' element={<Home/>}/>
-        </Routes>
-      </BrowserRouter>
+    
     </div>
   );
 }
