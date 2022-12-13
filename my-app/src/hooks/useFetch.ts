@@ -29,24 +29,30 @@ export function useFetch<TResponse>(url: string) {
   // 5 - refatorando post
   const [callFetch, setCallFetch] = useState(true);
 
+  // 6 - loading
+  const [ loading, setLoading] = useState(false)
 
+  // 7 - tratamento de erros
+  const [error, setError] = useState(null)
 
   useEffect(() => {
-    if (!callFetch ) return
 
+    if (!callFetch ) return
+   
     const fetchData = async () => {
+      setLoading(true)
+
       const json = await request<TResponse>(url);
 
-      
-
       setData(json);
-      setCallFetch(false)
-    };
 
-    
+      setCallFetch(false)
+
+      setLoading(false)
+    };
 
     fetchData();
   }, [url, callFetch]);
 
-  return { data, reload: () => setCallFetch(true) };
+  return { data, reload: () => setCallFetch(true), loading };
 };
