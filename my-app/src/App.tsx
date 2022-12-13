@@ -16,13 +16,22 @@ type Usuario = {
 };
 
 function criarContato(contato: Usuario) {
-  fetch(url, {
+  return fetch(url, {
     method: "POST",
     headers: {
       "Content-type": "application/json",
     },
     body: JSON.stringify(contato),
-  });
+  })
+}
+
+function deletarContato(id: number) {
+  return fetch(`${url}/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-type": "application/json",
+    }
+  })
 }
 
 function App() {
@@ -31,9 +40,14 @@ function App() {
   const [endereço, setEndereço] = useState("");
   const [email, setEmail] = useState("");
   const [telefone, setTelefone] = useState("");
+  const [loading, setLoading] = useState(true)
 
   // 4 - custom
   const { data: items, reload } = useFetch<Usuario[]>(url);
+  useEffect(() => {
+    setLoading(false)
+  },[items]) 
+  
   const usuariosOrdenados = items?.sort((a, b) => a.nome.toLowerCase() > b.nome.toLowerCase() ? 1 : -1)
 
 
@@ -41,6 +55,7 @@ function App() {
   // 2 - adicionar usuário
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+    setLoading(true)
 
     const usu = {
       nome,
@@ -49,19 +64,32 @@ function App() {
       telefone,
     };
 
-    criarContato(usu)
-    reload()
+    await criarContato(usu)
+   
 
     setNome("");
     setEmail("");
     setEndereço("");
     setTelefone("");
+    setLoading(false)
+    reload()
   };
+
+  const handleDelete = async (id:number) => {
+    setLoading(true)
+    await deletarContato(id)
+    
+    setLoading(false)
+    reload()
+  }
 
   return (
     <div className="App">
       <h1>Contatos</h1>
-      <ul>
+      {/* 6 - loading */}
+      {loading && <p>Carregando dados...</p>}
+      {!loading && (
+        <ul>
         {usuariosOrdenados &&
           usuariosOrdenados.map((usuario: Usuario) => (
             <div key={usuario.id}>
@@ -69,9 +97,12 @@ function App() {
               <p>Endereço: {usuario.endereço}</p>
               <p>Telefone: {usuario.telefone}</p>
               <p>Email: {usuario.email}</p>
+              <button onClick={() => usuario.id && handleDelete(usuario.id)}>Deletar</button>
             </div>
           ))}
       </ul>
+      )}
+      
       <div className="add-usuario">
         <form onSubmit={handleSubmit}>
           <label>
@@ -110,7 +141,10 @@ function App() {
               onChange={(e) => setTelefone(e.target.value)}
             />
           </label>
-          <input type="submit" value="Cadastrar" />
+          
+  
+          <input type="submit"  disabled={loading} value="Cadastrar" />
+        
         </form>
       </div>
     </div>
