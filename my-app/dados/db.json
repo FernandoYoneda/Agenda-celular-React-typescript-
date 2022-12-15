@@ -1,3 +1,11 @@
 {
-  "usuarios": []
+  "usuarios": [
+    {
+      "email": "a@a.com",
+      "endereço": "casa",
+      "nome": "Fernando",
+      "telefone": "1199999999999",
+      "id": 2
+    }
+  ]
 }
