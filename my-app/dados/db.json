@@ -1,3 +1,11 @@
 {
-  "usuarios": []
+  "usuarios": [
+    {
+      "nome": "Lucas",
+      "endereço": "lucas",
+      "email": "dsdad",
+      "telefone": "dasdsads",
+      "id": 1
+    }
+  ]
 }
