@@ -34,6 +34,16 @@ function deletarContato(id: number) {
   })
 }
 
+function atualizarContato(id: number, contato: Usuario) {
+  return fetch(`${url}/${id}`, {
+    method:"PUT",
+    headers: {
+      "Content-type": "application/json"
+    },
+    body: JSON.stringify(contato)
+  })
+}
+
 function App() {
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [nome, setNome] = useState("");
@@ -41,6 +51,8 @@ function App() {
   const [email, setEmail] = useState("");
   const [telefone, setTelefone] = useState("");
   const [loading, setLoading] = useState(true)
+  const [atualizar,setAtualizar] = useState(false)
+  const [id, setId] = useState(0)
 
   // 4 - custom
   const { data: items, reload } = useFetch<Usuario[]>(url);
@@ -50,10 +62,10 @@ function App() {
   
   const usuariosOrdenados = items?.sort((a, b) => a.nome.toLowerCase() > b.nome.toLowerCase() ? 1 : -1)
 
-
-
   // 2 - adicionar usuário
+  
   const handleSubmit = async (e: any) => {
+ 
     e.preventDefault();
     setLoading(true)
 
@@ -63,9 +75,13 @@ function App() {
       email,
       telefone,
     };
-
-    await criarContato(usu)
-   
+    
+    if(!atualizar){
+      await criarContato(usu)
+    }else {
+      await atualizarContato(id, usu)
+    } 
+    setAtualizar(false)
 
     setNome("");
     setEmail("");
@@ -83,6 +99,17 @@ function App() {
     reload()
   }
 
+  const handleAtualizar = (usuario: Usuario) => {
+    setAtualizar(true)
+   if(usuario.id) {
+    setId(usuario.id)
+   } 
+    setNome(usuario.nome);
+    setEmail(usuario.email);
+    setEndereço(usuario.endereço);
+    setTelefone(usuario.telefone);
+  }
+
   return (
     <div className="App">
       <h1>Contatos</h1>
@@ -93,7 +120,10 @@ function App() {
         {usuariosOrdenados &&
           usuariosOrdenados.map((usuario: Usuario) => (
             <div key={usuario.id}>
-              <h1>{usuario.nome}</h1>
+              <h1>
+                <button className="button-link"  onClick={() => handleAtualizar(usuario)}>{usuario.nome}</button>
+              </h1>
+              
               <p>Endereço: {usuario.endereço}</p>
               <p>Telefone: {usuario.telefone}</p>
               <p>Email: {usuario.email}</p>
