@@ -2,47 +2,49 @@ import { useState } from "react";
 import { criarContato, novoUsuario, atualizarContato } from "../services";
 import { Contato } from "../types";
 
-
 type CadastroContatoProps = {
   reload: () => void;
   loading: boolean;
   setLoading: (loading: boolean) => void;
+  contato: Contato;
+  setContato: (contato: Contato | ((contato: Contato) => Contato)) => void;
 };
 
 function CadastroContato({
   reload,
   loading,
   setLoading,
+  contato,
+  setContato,
 }: CadastroContatoProps) {
-  const [contato, setContato] = useState<Contato>(novoUsuario());
-  const [atualizar, setAtualizar] = useState(false)
-  const [id, setId] = useState(0)
-  
-
+  const [atualizar, setAtualizar] = useState(false);
+  const [id, setId] = useState(0);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     setLoading(true);
 
-    if (!atualizar){
-        await criarContato(contato);
-    }else{
-        await atualizarContato(id, contato)
-    }    
+    if (!atualizar) {
+      await criarContato(contato);
+    } else {
+      await atualizarContato(id, contato);
+    }
 
-    setAtualizar(false)
+    setAtualizar(false);
     setContato(novoUsuario());
     setLoading(false);
     reload();
   };
 
   const handleAtualizar = (usuario: Contato) => {
-    setAtualizar(true)
-   if(usuario.id) {
-    setId(usuario.id)
-   } 
-    setContato(usuario)
-  }
+    setAtualizar(true);
+
+    if (usuario.id) {
+      setId(usuario.id);
+    }
+
+    setContato(usuario);
+  };
 
   return (
     <div className="add-usuario">
@@ -95,12 +97,11 @@ function CadastroContato({
           />
         </label>
         <input type="submit" disabled={loading} value="Cadastrar" />
-        <button onClick={() => handleAtualizar(contato)} >Atualizar</button>
+        <button onClick={() => handleAtualizar(contato)}>Atualizar</button>
       </form>
-      
-     
     </div>
   );
 }
 
 export default CadastroContato;
+
